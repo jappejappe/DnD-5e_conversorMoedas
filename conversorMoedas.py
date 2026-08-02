@@ -1,184 +1,100 @@
-DEFAULT = ("\x1b[0m")
-WHITE = ("\033[37m")
-RED = ("\033[31m")
-GREEN = ("\033[32m")
-YELLOW = ("\033[33m")
-BLUE = ("\033[34m")
-BOLD = ("\033[1m")
-contagem = ('')
+import tkinter as tk
+from tkinter import ttk, messagebox
 
-print(f'{RED}Bem vindo ao conversor de moedas de D&D 5E!{DEFAULT}\nFunciona de forma simples e rápida.\n')
+materiais = [
+    "Cobre",
+    "Prata",
+    "Electro",
+    "Ouro",
+    "Platina"
+]
 
-while contagem.upper() != ('N'):
-
-    print(f'{YELLOW}(0){DEFAULT} Sair\n{YELLOW}(1){DEFAULT} Peças de cobre\n{YELLOW}(2){DEFAULT} Peças de prata\n{YELLOW}(3){DEFAULT} Peças de Electro\n{YELLOW}(4){DEFAULT} Peças de ouro\n{YELLOW}(5){DEFAULT} Peças de platina')
+def converter_moeda(moeda_origem, moeda_destino, quantidade):
+    valores_em_cobre = {
+        'cobre': 1,
+        'prata': 10,
+        'electro': 50,
+        'ouro': 100,
+        'platina': 1000
+    }
     
-    while True:
-        try:
-            tipo = int(input(f'\n{YELLOW}Moeda que você tem: {DEFAULT}'))
-            quantidade = int(input(f'{YELLOW}Quantidade de moedas: {DEFAULT}'))
-            moedaDesejada = int(input(f'{YELLOW}Moeda desejada: {DEFAULT}'))
-            break
+    origem = moeda_origem.lower()
+    destino = moeda_destino.lower()
+    
+    total_em_cobre = quantidade * valores_em_cobre[origem]
+    
+    resultado = int(total_em_cobre // valores_em_cobre[destino])
 
-        except:
-            print('Insira um valor válido')
+    messagebox.showinfo("Resultado", f"Você possui {resultado} moedas de {moeda_destino}.\nSobraram {total_em_cobre % valores_em_cobre[destino]} moedas de {moeda_origem}.")
+    return resultado
 
-    if tipo <= 0 or quantidade <= 0 or moedaDesejada <= 0:
-        break
-    if tipo >= 6  or moedaDesejada >= 6:
-        print('Escolha uma moeda válida, tente novamente\n\n')
+#######################################################################################################
+#### INTERFACE GRÁFICA
+root = tk.Tk()
+root.geometry("400x550")
+root.title("Conversor de Moedas D&D 5E")
 
+try:
+    root.tk.call("source", "azure.tcl")
+    root.tk.call("set_theme", "dark")
+except tk.TclError:
+    print("Aviso: Tema azure.tcl não encontrado. O app rodará com o tema padrão.")
 
-
-    if moedaDesejada == 1:
-        material = ('cobre')
-
-    elif moedaDesejada == 2:
-        material = ('prata')
-
-    elif moedaDesejada == 3:
-        material = ('electro')
-
-    elif moedaDesejada == 4:
-        material = ('ouro')
-
-    elif moedaDesejada == 5:
-        material = ('platina')
-
-
-    if tipo == moedaDesejada:
-        print('Você não pode converter uma moeda para ela mesma, tente novamente\n\n')
-
-
-    if tipo > moedaDesejada:
-
-        # conversão para moedas menores
-
-        if tipo == 5 and moedaDesejada == 4:
-            x = quantidade * 10
-            print('\nVocê tem um total de', x, 'moedas de', material)
-
-        elif tipo == 5 and moedaDesejada == 3:
-            x = quantidade * 20
-            print('\nVocê tem um total de', x, 'moedas de', material)
-
-        elif tipo == 5 and moedaDesejada == 2:
-            x = quantidade * 100
-            print('\nVocê tem um total de', x, 'moedas de', material)
-
-        elif tipo == 5 and moedaDesejada == 1:
-            x = quantidade * 1000
-            print('\nVocê tem um total de', x, 'moedas de', material)
-
-        elif tipo == 4 and moedaDesejada == 3:
-            x = quantidade * 2
-            print('\nVocê tem um total de', x, 'moedas de', material)
-
-        elif tipo == 4 and moedaDesejada == 2:
-            x = quantidade * 10
-            print('\nVocê tem um total de', x, 'moedas de', material)
-
-        elif tipo == 4 and moedaDesejada == 1:
-            x = quantidade * 100
-            print('\nVocê tem um total de', x, 'moedas de', material)
-
-        elif tipo == 3 and moedaDesejada == 2:
-            x = quantidade * 5
-            print('\nVocê tem um total de', x, 'moedas de', material)
-
-        elif tipo == 3 and moedaDesejada == 1:
-            x = quantidade * 50
-            print('\nVocê tem um total de', x, 'moedas de', material)
-
-        elif tipo == 2 and moedaDesejada == 1:
-            x = quantidade * 10
-            print('\nVocê tem um total de', x, 'moedas de', material)
-
-
-
+def change_theme():
+    if root.tk.call("ttk::style", "theme", "use") == "azure-dark":
+        root.tk.call("set_theme", "light")
     else:
-        # conversão para moedas maiores
+        root.tk.call("set_theme", "dark")
 
-        if tipo == 1 and moedaDesejada == 2:
-            numero = 10
-            x = quantidade // numero
-            y = quantidade % numero
-            if y != 0:
-                print('\nVocê tem um total de', x, 'moedas de', material, 'e restam', y, )
-            else: print('\nVocê tem um total de', x, 'moedas de', material)
+main_frame = ttk.Frame(root, padding=20)
+main_frame.pack(fill="both", expand=True)
 
-        elif tipo == 1 and moedaDesejada == 3:
-            numero = 50
-            x = quantidade // numero
-            y = quantidade % numero
-            if y != 0:
-                print('\nVocê tem um total de', x, 'moedas de', material, 'e restam', y, )
-            else: print('\nVocê tem um total de', x, 'moedas de', material)
+header_frame = ttk.Frame(main_frame)
+header_frame.pack(fill="x", pady=(0, 20)) 
 
-        elif tipo == 1 and moedaDesejada == 4:
-            numero = 100
-            x = quantidade // numero
-            y = quantidade % numero
-            if y != 0:
-                print('\nVocê tem um total de', x, 'moedas de', material, 'e restam', y, )
-            else: print('\nVocê tem um total de', x, 'moedas de', material)
+header_frame.columnconfigure(0, weight=1)
 
-        elif tipo == 1 and moedaDesejada == 5:
-            numero = 1000
-            x = quantidade // numero
-            y = quantidade % numero
-            if y != 0:
-                print('\nVocê tem um total de', x, 'moedas de', material, 'e restam', y, )
-            else: print('\nVocê tem um total de', x, 'moedas de', material)
+# Título
+title_label = ttk.Label(header_frame, text="Moedas D&D", font=("Segoe UI", 20, "bold"))
+title_label.grid(row=0, column=0, sticky="w")
 
-        elif tipo == 2 and moedaDesejada == 3:
-            numero = 5
-            x = quantidade // numero
-            y = quantidade % numero
-            if y != 0:
-                print('\nVocê tem um total de', x, 'moedas de', material, 'e restam', y, )
-            else: print('\nVocê tem um total de', x, 'moedas de', material)
+# Botão de tema
+theme_button = ttk.Label(header_frame, text="◐", cursor="hand2", font=("Segoe UI", 20, "bold"))
+theme_button.grid(row=0, column=1, sticky="e") 
+theme_button.bind("<Button-1>", lambda e: change_theme())
 
-        elif tipo == 2 and moedaDesejada == 4:
-            numero = 10
-            x = quantidade // numero
-            y = quantidade % numero
-            if y != 0:
-                print('\nVocê tem um total de', x, 'moedas de', material, 'e restam', y, )
-            else: print('\nVocê tem um total de', x, 'moedas de', material)
+# Grupo: Moeda de origem
+frame_origem = ttk.LabelFrame(main_frame, text=" Moeda de Origem ", padding=15)
+frame_origem.pack(fill="x", pady=(0, 15))
 
-        elif tipo == 2 and moedaDesejada == 5:
-            numero = 100
-            x = quantidade // numero
-            y = quantidade % numero
-            if y != 0:
-                print('\nVocê tem um total de', x, 'moedas de', material, 'e restam', y, )
-            else: print('\nVocê tem um total de', x, 'moedas de', material)
+ttk.Label(frame_origem, text="Tipo de moeda que possui:").pack(anchor="w", pady=(0, 5))
+combo_origem = ttk.Combobox(frame_origem, values=materiais, state="readonly")
+combo_origem.current(0)
+combo_origem.pack(fill="x", pady=(0, 15))
 
-        elif tipo == 3 and moedaDesejada == 4:
-            numero = 2
-            x = quantidade // numero
-            y = quantidade % numero
-            if y != 0:
-                print('\nVocê tem um total de', x, 'moedas de', material, 'e restam', y, )
-            else: print('\nVocê tem um total de', x, 'moedas de', material)
+ttk.Label(frame_origem, text="Quantidade:").pack(anchor="w", pady=(0, 5))
+amount_var = tk.IntVar(value=0)
+amount = ttk.Spinbox(frame_origem, from_=0, to=99999, increment=1, textvariable=amount_var)
+amount.pack(fill="x")
 
-        elif tipo == 3 and moedaDesejada == 5:
-            numero = 20
-            x = quantidade // numero
-            y = quantidade % numero
-            if y != 0:
-                print('\nVocê tem um total de', x, 'moedas de', material, 'e restam', y, )
-            else: print('\nVocê tem um total de', x, 'moedas de', material)
+# Grupo: Moeda de destino
+frame_destino = ttk.LabelFrame(main_frame, text=" Moeda de Destino ", padding=15)
+frame_destino.pack(fill="x", pady=(0, 25))
 
-        elif tipo == 4 and moedaDesejada == 5:
-            numero = 10
-            x = quantidade // numero
-            y = quantidade % numero
-            if y != 0:
-                print('\nVocê tem um total de', x, 'moedas de', material, 'e restam', y, )
-            else: print('\nVocê tem um total de', x, 'moedas de', material)
-        
-    contagem = input('Deseja fazer outra conversão? (y/n) ')
-print(f'{BLUE}Volte sempre!{DEFAULT}')
-input('\npressione Enter para sair')
+ttk.Label(frame_destino, text="Converter para:").pack(anchor="w", pady=(0, 5))
+combo_destino = ttk.Combobox(frame_destino, values=materiais, state="readonly")
+combo_destino.current(0)
+combo_destino.pack(fill="x")
+
+# Botão de conversão
+btn_converter = ttk.Button(
+    main_frame,
+    text="Converter",
+    style="Accent.TButton",
+    command=lambda: converter_moeda(combo_origem.get(), combo_destino.get(), amount_var.get())
+)
+
+btn_converter.pack(fill="x", ipady=5) 
+
+root.mainloop()
+#######################################################################################################
