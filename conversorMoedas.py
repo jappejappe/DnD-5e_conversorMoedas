@@ -1,5 +1,14 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+import os
+import sys
+
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
 
 materiais = [
     "Cobre",
@@ -24,8 +33,10 @@ def converter_moeda(moeda_origem, moeda_destino, quantidade):
     total_em_cobre = quantidade * valores_em_cobre[origem]
     
     resultado = int(total_em_cobre // valores_em_cobre[destino])
+    resto_em_cobre = total_em_cobre % valores_em_cobre[destino]
+    sobra_moeda_origem = resto_em_cobre // valores_em_cobre[origem]
 
-    messagebox.showinfo("Resultado", f"Você possui {resultado} moedas de {moeda_destino}.\nSobraram {total_em_cobre % valores_em_cobre[destino]} moedas de {moeda_origem}.")
+    messagebox.showinfo("Resultado", f"Você possui {resultado} moedas de {moeda_destino.capitalize()}.\nSobraram {sobra_moeda_origem} moedas de {moeda_origem.capitalize()}.")
     return resultado
 
 #######################################################################################################
@@ -35,7 +46,8 @@ root.geometry("400x550")
 root.title("Conversor de Moedas D&D 5E")
 
 try:
-    root.tk.call("source", "azure.tcl")
+    caminho_tema = resource_path("azure.tcl")
+    root.tk.call("source", caminho_tema)
     root.tk.call("set_theme", "dark")
 except tk.TclError:
     print("Aviso: Tema azure.tcl não encontrado. O app rodará com o tema padrão.")
