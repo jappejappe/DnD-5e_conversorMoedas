@@ -9,6 +9,26 @@ materiais = [
     "Platina"
 ]
 
+def converter_moeda(moeda_origem, moeda_destino, quantidade):
+    valores_em_cobre = {
+        'cobre': 1,
+        'prata': 10,
+        'electrum': 50,
+        'ouro': 100,
+        'platina': 1000
+    }
+    
+    origem = moeda_origem.lower()
+    destino = moeda_destino.lower()
+    
+    total_em_cobre = quantidade * valores_em_cobre[origem]
+    
+    resultado = total_em_cobre / valores_em_cobre[destino]
+    
+    return resultado
+
+#######################################################################################################
+#### INTERFACE GRÁFICA
 root = tk.Tk()
 root.geometry("400x550")
 root.title("Conversor de Moedas D&D 5E")
@@ -71,3 +91,4 @@ btn_converter = ttk.Button(main_frame, text="Converter", style="Accent.TButton")
 btn_converter.pack(fill="x", ipady=5) 
 
 root.mainloop()
+#######################################################################################################
