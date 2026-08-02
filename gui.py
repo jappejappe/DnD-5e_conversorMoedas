@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 
 materiais = [
     "Cobre",
@@ -13,7 +13,7 @@ def converter_moeda(moeda_origem, moeda_destino, quantidade):
     valores_em_cobre = {
         'cobre': 1,
         'prata': 10,
-        'electrum': 50,
+        'electro': 50,
         'ouro': 100,
         'platina': 1000
     }
@@ -23,8 +23,9 @@ def converter_moeda(moeda_origem, moeda_destino, quantidade):
     
     total_em_cobre = quantidade * valores_em_cobre[origem]
     
-    resultado = total_em_cobre / valores_em_cobre[destino]
-    
+    resultado = int(total_em_cobre // valores_em_cobre[destino])
+
+    messagebox.showinfo("Resultado", f"Você possui {resultado} moedas de {moeda_destino}.\nSobraram {total_em_cobre % valores_em_cobre[destino]} moedas de {moeda_origem}.")
     return resultado
 
 #######################################################################################################
@@ -33,7 +34,6 @@ root = tk.Tk()
 root.geometry("400x550")
 root.title("Conversor de Moedas D&D 5E")
 
-# Carrega o tema Azure
 try:
     root.tk.call("source", "azure.tcl")
     root.tk.call("set_theme", "dark")
@@ -87,7 +87,13 @@ combo_destino.current(0)
 combo_destino.pack(fill="x")
 
 # Botão de conversão
-btn_converter = ttk.Button(main_frame, text="Converter", style="Accent.TButton")
+btn_converter = ttk.Button(
+    main_frame,
+    text="Converter",
+    style="Accent.TButton",
+    command=lambda: converter_moeda(combo_origem.get(), combo_destino.get(), amount_var.get())
+)
+
 btn_converter.pack(fill="x", ipady=5) 
 
 root.mainloop()
